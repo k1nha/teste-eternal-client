@@ -4,7 +4,7 @@ import axios from '../services/axios';
 
 export const useAuth = defineStore('auth', () => {
   const token = ref(localStorage.getItem('token'));
-  const user = ref(JSON.parse(localStorage.getItem('user') || '{}'));
+  const user = ref(JSON.stringify(localStorage.getItem('user') || '{}'));
 
   function setAuthToken(tokenStorage: string) {
     localStorage.setItem('token', tokenStorage);
@@ -16,16 +16,25 @@ export const useAuth = defineStore('auth', () => {
     user.value = userStorage;
   }
 
+  function authClear() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    token.value = '';
+    user.value = '';
+  }
+
   async function checkAuthToken() {
     try {
       const userToken = 'Bearer ' + token.value;
-      const { message }: any = await axios.get('/auth/verify', {
-        headers: {
-          Authorization: userToken,
-        },
-      });
+      const response = await axios
+        .get('/auth/verify', {
+          headers: {
+            Authorization: userToken,
+          },
+        })
+        .then(res => res.data);
 
-      return message;
+      return response;
     } catch (err) {
       console.error(err);
     }
@@ -37,5 +46,6 @@ export const useAuth = defineStore('auth', () => {
     setAuthToken,
     setAuthUser,
     checkAuthToken,
+    authClear,
   };
 });

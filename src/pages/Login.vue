@@ -15,7 +15,7 @@
       >
         <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1
-            class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white"
+            class="text-xl font-bold leading-tight tracking-tight md:text-2xl text-white text-center"
           >
             Sign in to your account
           </h1>
@@ -79,9 +79,11 @@
             </button>
             <p class="text-sm font-light text-gray-400">
               Don’t have an account yet?
-              <a href="#" class="font-medium hover:underline text-primary"
-                >Sign up</a
-              >
+              <router-link
+                to="/register"
+                class="font-medium hover:underline text-primary"
+                >Create account
+              </router-link>
             </p>
           </q-form>
         </div>
@@ -92,8 +94,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import axios from '../services/axios';
-import { useAuth } from '../store/useAuth';
+import axios from '../services/axios.js';
+import { useAuth } from '../store/useAuth.js';
+import { useRouter } from 'vue-router';
 
 interface MessageResponse {
   message: {
@@ -103,15 +106,16 @@ interface MessageResponse {
 }
 
 export default defineComponent({
-  name: 'Home',
+  name: 'Login',
   setup() {
     const auth = useAuth();
+    const router = useRouter();
     return {
       isPwd: ref(true),
-      email: ref('lucascmpus@gmail.com'),
+      email: ref('lucascmpus@gmail.com'), //TODO: remove email/password
       password: ref('1234'),
-      dense: ref(false),
       auth,
+      router,
     };
   },
 
@@ -123,29 +127,14 @@ export default defineComponent({
           password: this.password,
         };
 
-        console.log(user);
-
         const { message }: MessageResponse = await axios
           .post('auth/user', JSON.stringify(user))
           .then(res => res.data);
-        // const { message }: MessageResponse = await fetch(
-        //   'http://localhost:3030/auth/user',
-        //   {
-        //     method: 'POST',
-        //     headers: {
-        //       'Content-Type': 'application/json',
-        //       Accept: 'application/json',
-        //     },
-        //     body: JSON.stringify(user),
-        //   },
-        // )
-        //   .then(res => res.json())
-        //   .then(data => console.log(data));
 
-        console.log(message);
         this.auth.setAuthToken(message.token);
-
         this.auth.setAuthUser(message.email);
+
+        this.router.push({ name: 'Dashboard' });
       } catch (err) {
         console.log(err);
       }

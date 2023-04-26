@@ -4,7 +4,7 @@
     <div
       class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
-      Classes
+      Students
     </div>
   </div>
 </template>
@@ -14,7 +14,7 @@ import { defineComponent, ref } from 'vue';
 import Header from '../../components/header/Header.vue';
 
 export default defineComponent({
-  name: 'Classes',
+  name: 'Student',
   components: {
     Header,
   },
