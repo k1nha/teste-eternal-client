@@ -1,6 +1,5 @@
 <template>
   <div class="">Page Not Found</div>
-  <q-input outlined v-model="text" label="Outlined" />
 </template>
 
 <script lang="ts">

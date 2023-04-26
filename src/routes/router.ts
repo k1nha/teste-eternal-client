@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     component: Home,
   },
   {
-    path: '/',
+    path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
     meta: {
@@ -32,13 +32,16 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
-  if (to.meta?.auth) {
-    const auth = useAuth();
-    if (auth.token && auth.user) {
-      
-    }
-  }
-});
+// router.beforeEach(async (to, from, next) => {
+//   if (to.meta?.auth) {
+//     const auth = useAuth();
+//     if (auth.token && auth.user) {
+//       const isAuth = await auth.checkAuthToken();
+//       if (isAuth) {
+//         next();
+//       }
+//     }
+//   }
+// });
 
 export default router;
