@@ -2,7 +2,7 @@
   <li>
     <router-link
       :to="link"
-      class="text-white flex items-center whitespace-nowrap overflow-hidden rounded-2xl py-2 px-3 hover:bg-blue-500/80 hover:text-white"
+      class="text-white flex items-center whitespace-nowrap overflow-hidden rounded-2xl py-2 px-3 hover:bg-primary hover:text-white"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

@@ -5,7 +5,7 @@
     >
       <a
         href="#"
-        class="flex items-center mb-6 text-2xl font-semibold dark:text-white"
+        class="flex items-center mb-6 text-2xl font-semibold text-white"
       >
         <img src="../assets/svg-path.svg" class="w-9 h-9 mr-2" alt="" />
         Eternal Tech

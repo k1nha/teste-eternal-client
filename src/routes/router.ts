@@ -3,7 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 // Components
 import Home from '../pages/Home.vue';
 import PageNotFound from '../pages/PageNotFound.vue';
-import Dashboard from '../pages/Dashboard.vue';
+import Dashboard from '../pages/principal/Dashboard.vue';
 import { useAuth } from '../store/useAuth';
 
 const routes: RouteRecordRaw[] = [
