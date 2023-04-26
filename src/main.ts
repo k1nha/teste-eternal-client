@@ -1,22 +1,23 @@
-import { createApp } from 'vue';
-import './css/tailwind.css';
-import App from './App.vue';
-import router from './routes/router';
-import { Quasar } from 'quasar';
 import { createPinia } from 'pinia';
+import { Quasar } from 'quasar';
+import { createApp } from 'vue';
+import App from './App.vue';
+import './css/tailwind.css';
+import router from './routes/router';
 
 // Import icon libraries
-import '@quasar/extras/roboto-font/roboto-font.css';
-import '@quasar/extras/material-icons/material-icons.css';
 import '@quasar/extras/fontawesome-v5/fontawesome-v5.css';
+import '@quasar/extras/material-icons/material-icons.css';
+import '@quasar/extras/roboto-font/roboto-font.css';
 
 // Import Quasar css
 import 'quasar/src/css/index.sass';
 
 const myApp = createApp(App);
+const pinia = createPinia();
 
+myApp.use(pinia);
 myApp.use(router);
-myApp.use(createPinia());
 
 myApp.use(Quasar, {
   plugins: {},

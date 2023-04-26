@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import instanceAxios from '../services/axios';
+import axios from '../services/axios';
 import router from '../routes/router';
 
 export const useAuth = defineStore('auth', () => {
@@ -17,37 +17,19 @@ export const useAuth = defineStore('auth', () => {
     user.value = userStorage;
   }
 
+  async function checkAuthToken(tkn: string) {
+    try {
+      const userToken = 'Bearer ' + token.value;
+      const { message } = await axios.get('');
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   return {
+    user,
+    token,
     setAuthToken,
     setAuthUser,
   };
-});
-
-export const useAuthTeste = defineStore({
-  id: 'authteste',
-  state: () => ({
-    user: JSON.parse(localStorage.getItem('user') || '{}'),
-    token: localStorage.getItem('token'),
-    returnUrl: null,
-  }),
-  actions: {
-    async login(username: string, password: string) {
-      const user = await instanceAxios.post('/auth/user', {
-        username,
-        password,
-      });
-
-      this.user = user;
-
-      localStorage.setItem('user', JSON.stringify(user));
-
-      router.push(this.returnUrl || '/dashboard');
-    },
-
-    logout() {
-      this.user = null;
-      localStorage.removeItem('user');
-      router.push('/login');
-    },
-  },
 });

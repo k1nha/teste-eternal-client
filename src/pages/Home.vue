@@ -95,15 +95,23 @@ import { defineComponent, ref } from 'vue';
 import axios from '../services/axios';
 import { useAuth } from '../store/useAuth';
 
-const auth = useAuth();
+interface MessageResponse {
+  message: {
+    token: string;
+    email: string;
+  };
+}
+
 export default defineComponent({
   name: 'Home',
   setup() {
+    const auth = useAuth();
     return {
       isPwd: ref(true),
-      email: ref(''),
-      password: ref(''),
+      email: ref('lucascmpus@gmail.com'),
+      password: ref('1234'),
       dense: ref(false),
+      auth,
     };
   },
 
@@ -117,10 +125,27 @@ export default defineComponent({
 
         console.log(user);
 
-        const { message }: any = await axios.post('/auth/user'); //TODO: Type this response
+        const { message }: MessageResponse = await axios
+          .post('auth/user', JSON.stringify(user))
+          .then(res => res.data);
+        // const { message }: MessageResponse = await fetch(
+        //   'http://localhost:3030/auth/user',
+        //   {
+        //     method: 'POST',
+        //     headers: {
+        //       'Content-Type': 'application/json',
+        //       Accept: 'application/json',
+        //     },
+        //     body: JSON.stringify(user),
+        //   },
+        // )
+        //   .then(res => res.json())
+        //   .then(data => console.log(data));
 
-        auth.setAuthToken(message.token);
-        auth.setAuthUser(message.user);
+        console.log(message);
+        this.auth.setAuthToken(message.token);
+
+        this.auth.setAuthUser(message.email);
       } catch (err) {
         console.log(err);
       }
