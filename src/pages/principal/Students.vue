@@ -116,7 +116,6 @@ export default defineComponent({
   data() {
     return {
       students: [],
-      selected: [],
     };
   },
   setup() {

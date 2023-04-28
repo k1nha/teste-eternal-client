@@ -15,7 +15,7 @@
         <q-table
           title="List of Courses"
           :columns="columns"
-          :rows="students"
+          :rows="courses"
           separator="cell"
           row-key="_id"
           dense
@@ -27,7 +27,7 @@
                 color="warning"
                 size="sm"
                 dense
-                @click="editStudent(props.row._id)"
+                @click="editCourses(props.row._id)"
               />
               <q-btn
                 icon="delete"
@@ -35,7 +35,7 @@
                 size="sm"
                 dense
                 class="ml-2"
-                @click="deleteStudent(props.row._id)"
+                @click="deleteCourses(props.row._id)"
               />
             </q-td>
           </template>
@@ -43,21 +43,134 @@
       </div>
     </div>
   </div>
+
+  <!-- MODAL -->
+  <q-dialog class="" v-model="register">
+    <q-card>
+      <q-form
+        class="flex flex-col justify-between h-[380px] w-[500px] bg-white p-10"
+        @submit="onSubmit"
+      >
+        <span class="text-xl">Register</span>
+        <q-input outlined v-model="nameCourse" label="Name" />
+        <q-input
+          outlined
+          v-model="descriptionCourse"
+          label="Description"
+          autogrow
+        />
+
+        <q-btn label="Cadastrar" color="primary" type="submit" v-close-popup />
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import axios from '../../services/axios';
 import Header from '../../components/header/Header.vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'Courses',
   components: {
     Header,
   },
+  data() {
+    return {
+      courses: [],
+    };
+  },
   setup() {
+    const $q = useQuasar();
     return {
       register: ref(false),
+      nameCourse: ref(''),
+      descriptionCourse: ref(''),
+
+      columns: [
+        {
+          name: '_id',
+          label: 'ID',
+          field: '_id',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'name',
+          label: 'Name',
+          field: 'name',
+          align: 'center',
+          sortable: 'true',
+        },
+        {
+          name: 'description',
+          label: 'Description',
+          field: 'description',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'action',
+          label: 'Actions',
+          align: 'center',
+        },
+      ],
     };
+  },
+  methods: {
+    async populatedTable() {
+      await axios
+        .get('/api/courses')
+        .then(res => {
+          this.courses = res.data;
+        })
+        .catch(err => {
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          });
+        });
+    },
+
+    onSubmit() {
+      const body = {
+        name: this.nameCourse,
+        description: this.descriptionCourse,
+      };
+
+      axios
+        .post('/api/courses', body)
+        .then(() => {
+          this.populatedTable();
+          this.refreshInputs();
+        })
+        .catch(err =>
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          }),
+        );
+    },
+    editCourses(id: string) {
+      console.log(id);
+    },
+    deleteCourses(id: string) {
+      console.log(id);
+    },
+
+    refreshInputs() {
+      this.nameCourse = '';
+      this.descriptionCourse = '';
+    },
+  },
+  mounted() {
+    this.populatedTable();
   },
 });
 </script>
