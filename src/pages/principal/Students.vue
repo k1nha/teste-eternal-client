@@ -21,6 +21,7 @@
           separator="cell"
           row-key="_id"
           dense
+          card-class="bg-backdrop backdropfilter"
         >
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
