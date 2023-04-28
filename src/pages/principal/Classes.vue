@@ -4,9 +4,68 @@
     <div
       class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
-      Classes
+      <div class="w-full flex p-10">
+        <div class="w-full flex justify-between items-center rounded-md">
+          <span class="text-xl uppercase tracking-wide font-bold">Classes</span>
+          <q-btn label="Register" color="primary" @click="register = true" />
+        </div>
+      </div>
+
+      <div class="w-full p-10">
+        <q-table
+          title="List of Classes"
+          :columns="columns"
+          :rows="students"
+          separator="cell"
+          row-key="_id"
+          dense
+        >
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                icon="create"
+                color="warning"
+                size="sm"
+                dense
+                @click="editStudent(props.row._id)"
+              />
+              <q-btn
+                icon="delete"
+                color="negative"
+                size="sm"
+                dense
+                class="ml-2"
+                @click="deleteStudent(props.row._id)"
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </div>
     </div>
   </div>
+
+  <!--  -->
+  <q-dialog class="" v-model="register">
+    <q-card>
+      <q-form
+        class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
+        @submit="onSubmit"
+      >
+        <q-input outlined v-model="nameStudent" label="Name" />
+        <q-input outlined v-model="ageStudent" label="Age" />
+        <q-select
+          class="w-auto"
+          outlined
+          v-model="modelGender"
+          :options="genderOptions"
+          label="Sexo"
+        />
+        <q-input outlined v-model="phoneStudent" label="Phone Number" />
+
+        <q-btn label="Editar" color="primary" type="submit" v-close-popup />
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -20,8 +79,12 @@ export default defineComponent({
   },
   setup() {
     return {
-      text: ref(''),
+      register: ref(false),
     };
+  },
+
+  methods: {
+    onSubmit() {},
   },
 });
 </script>

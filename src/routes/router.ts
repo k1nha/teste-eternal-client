@@ -14,6 +14,7 @@ import Finance from '../pages/principal/Finance.vue';
 
 // Components
 import { useAuth } from '../store/useAuth';
+import History from '../pages/principal/History.vue';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -70,6 +71,14 @@ const routes: RouteRecordRaw[] = [
     path: '/frequency',
     name: 'Frequency',
     component: Frequency,
+    meta: {
+      auth: true,
+    },
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: History,
     meta: {
       auth: true,
     },

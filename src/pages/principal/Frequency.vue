@@ -4,7 +4,14 @@
     <div
       class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
-      Frequency
+      <div class="w-full flex p-10">
+        <div class="w-full flex justify-between items-center rounded-md">
+          <span class="text-xl uppercase tracking-wide font-bold"
+            >Frequency</span
+          >
+          <q-btn label="Register" color="primary" @click="register = true" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +27,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      text: ref(''),
+      register: ref(false),
     };
   },
 });

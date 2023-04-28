@@ -237,7 +237,6 @@ export default defineComponent({
         .get('/api/students')
         .then(res => {
           this.students = res.data;
-          // console.log(res.data);
         })
         .catch(err =>
           this.$q.notify({

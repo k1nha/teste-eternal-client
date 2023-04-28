@@ -4,7 +4,43 @@
     <div
       class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
-      Courses
+      <div class="w-full flex p-10">
+        <div class="w-full flex justify-between items-center rounded-md">
+          <span class="text-xl uppercase tracking-wide font-bold">Courses</span>
+          <q-btn label="Register" color="primary" @click="register = true" />
+        </div>
+      </div>
+
+      <div class="w-full p-10">
+        <q-table
+          title="List of Courses"
+          :columns="columns"
+          :rows="students"
+          separator="cell"
+          row-key="_id"
+          dense
+        >
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                icon="create"
+                color="warning"
+                size="sm"
+                dense
+                @click="editStudent(props.row._id)"
+              />
+              <q-btn
+                icon="delete"
+                color="negative"
+                size="sm"
+                dense
+                class="ml-2"
+                @click="deleteStudent(props.row._id)"
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </div>
     </div>
   </div>
 </template>
@@ -20,7 +56,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      text: ref(''),
+      register: ref(false),
     };
   },
 });
