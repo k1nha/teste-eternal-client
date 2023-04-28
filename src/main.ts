@@ -1,5 +1,5 @@
 import { createPinia } from 'pinia';
-import { Quasar } from 'quasar';
+import { Quasar, Notify } from 'quasar';
 import { createApp } from 'vue';
 import App from './App.vue';
 import './css/tailwind.css';
@@ -20,7 +20,12 @@ myApp.use(pinia);
 myApp.use(router);
 
 myApp.use(Quasar, {
-  plugins: {},
+  plugins: {
+    Notify,
+  },
+  config: {
+    notify: {},
+  },
 });
 
 myApp.mount('#app');
