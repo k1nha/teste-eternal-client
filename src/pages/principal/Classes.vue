@@ -15,7 +15,7 @@
         <q-table
           title="List of Classes"
           :columns="columns"
-          :rows="students"
+          :rows="classes"
           separator="cell"
           row-key="_id"
           dense
@@ -44,25 +44,71 @@
     </div>
   </div>
 
-  <!--  -->
-  <q-dialog class="" v-model="register">
+  <!-- Modal Form -->
+  <q-dialog v-model="register">
     <q-card>
       <q-form
         class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
         @submit="onSubmit"
       >
-        <q-input outlined v-model="nameStudent" label="Name" />
-        <q-input outlined v-model="ageStudent" label="Age" />
+        <q-input outlined v-model="nameClasses" label="Name" />
         <q-select
           class="w-auto"
           outlined
-          v-model="modelGender"
-          :options="genderOptions"
-          label="Sexo"
+          v-model="modelCourses"
+          :options="coursesSelectedOptions"
+          label="Courses"
         />
-        <q-input outlined v-model="phoneStudent" label="Phone Number" />
 
-        <q-btn label="Editar" color="primary" type="submit" v-close-popup />
+        <q-input
+          filled
+          v-model="startDate"
+          mask="date"
+          :rules="['date']"
+          label="Starting date"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="startDate">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+
+        <q-input
+          filled
+          v-model="endDate"
+          mask="date"
+          :rules="['date']"
+          label="End Date"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="endDate">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+
+        <q-btn label="Register" color="primary" type="submit" v-close-popup />
       </q-form>
     </q-card>
   </q-dialog>
@@ -70,21 +116,69 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import axios from '../../services/axios';
 import Header from '../../components/header/Header.vue';
+import { useQuasar } from 'quasar';
 
 export default defineComponent({
   name: 'Classes',
   components: {
     Header,
   },
+  data() {
+    return {
+      classes: [],
+    };
+  },
   setup() {
+    const $q = useQuasar();
     return {
       register: ref(false),
+      nameClasses: ref(''),
+      modelCourses: ref(''),
+      startDate: ref(''),
+      endDate: ref(''),
+      coursesOptions: ref([]),
+      coursesSelectedOptions: ref([]),
+      columns: [
+        {
+          name: '',
+        },
+      ],
     };
   },
 
   methods: {
-    onSubmit() {},
+    onSubmit() {
+      console.log('ok');
+      console.log('ok');
+      console.log('ok');
+    },
+    async populateTable() {},
+    async populateOptionsCourses() {
+      await axios
+        .get('/api/courses')
+        .then(res => (this.coursesOptions = res.data))
+        .catch(err => {
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          });
+        });
+
+      this.coursesOptions.map(item =>
+        this.coursesSelectedOptions.push(item.name),
+      );
+    },
+  },
+
+  mounted() {
+    this.populateTable();
+    this.populateOptionsCourses();
   },
 });
 </script>
+
+<!-- TODO: POPULATE TABLE REFRESH INPUTS -->
