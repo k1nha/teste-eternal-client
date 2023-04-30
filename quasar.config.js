@@ -1,4 +1,5 @@
-const { env } = require('process');
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports = function (ctx) {
   css: ['app.scss', 'tailwind.css'];
