@@ -64,6 +64,27 @@
       </q-form>
     </q-card>
   </q-dialog>
+
+  <!-- Modal edit -->
+  <q-dialog class="" v-model="edit">
+    <q-card>
+      <q-form
+        class="flex flex-col justify-between h-[380px] w-[500px] bg-white p-10"
+        @submit="onEditSubmit"
+      >
+        <span class="text-xl">Edit</span>
+        <q-input outlined v-model="nameCourse" label="Name" />
+        <q-input
+          outlined
+          v-model="descriptionCourse"
+          label="Description"
+          autogrow
+        />
+
+        <q-btn label="Edit" color="primary" type="submit" v-close-popup />
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -86,8 +107,10 @@ export default defineComponent({
     const $q = useQuasar();
     return {
       register: ref(false),
+      edit: ref(false),
       nameCourse: ref(''),
       descriptionCourse: ref(''),
+      editId: ref(''),
 
       columns: [
         {
@@ -102,7 +125,7 @@ export default defineComponent({
           label: 'Name',
           field: 'name',
           align: 'center',
-          sortable: 'true',
+          sortable: true,
         },
         {
           name: 'description',
@@ -157,11 +180,52 @@ export default defineComponent({
           }),
         );
     },
+
+    onEditSubmit() {
+      const body = {
+        name: this.nameCourse,
+        description: this.descriptionCourse,
+      };
+      axios
+        .put(`/api/courses/${this.editId}`, body)
+        .then(() => {
+          this.populatedTable();
+          this.refreshInputs();
+          this.editId = '';
+        })
+        .catch(err =>
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          }),
+        );
+    },
+
     editCourses(id: string) {
-      console.log(id);
+      // TODO: typeCourse
+      const courses: any = this.courses.find(course => course['_id'] == id);
+
+      this.edit = true;
+      this.editId = id;
+      this.nameCourse = courses.name;
+      this.descriptionCourse = courses.description;
     },
     deleteCourses(id: string) {
-      console.log(id);
+      axios
+        .delete(`/api/courses/${id}`)
+        .then(() => {
+          this.populatedTable();
+        })
+        .catch(err =>
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          }),
+        );
     },
 
     refreshInputs() {

@@ -11,6 +11,7 @@ import Students from '../pages/principal/Students.vue';
 import Classes from '../pages/principal/Classes.vue';
 import Frequency from '../pages/principal/Frequency.vue';
 import Finance from '../pages/principal/Finance.vue';
+import StudentsClasses from '../pages/principal/StudentsClasses.vue';
 
 // Components
 import { useAuth } from '../store/useAuth';
@@ -84,6 +85,14 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/studentclasses',
+    name: 'Student Classes',
+    component: StudentsClasses,
+    meta: {
+      auth: true,
+    },
+  },
+  {
     path: '/:catchAll(.*)*',
     name: 'PageNotFound',
     component: PageNotFound,
@@ -103,10 +112,10 @@ router.beforeEach(async (to, from, next) => {
       if (isAuth) {
         next();
       } else {
-        next({ name: 'Home' });
+        next({ name: 'Login' });
       }
     } else {
-      next({ name: 'Home' });
+      next({ name: 'Login' });
     }
   } else {
     next();

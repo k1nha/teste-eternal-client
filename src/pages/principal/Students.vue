@@ -54,6 +54,7 @@
         class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
         @submit="onSubmit"
       >
+      <span class="text-xl">Register</span>
         <q-input outlined v-model="nameStudent" label="Name" />
         <q-input outlined v-model="ageStudent" label="Age" />
         <q-select
@@ -77,6 +78,7 @@
         class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
         @submit="onEditSubmit"
       >
+      <span class="text-xl">Edit</span>
         <q-input outlined v-model="nameStudent" label="Name" />
         <q-input outlined v-model="ageStudent" label="Age" />
         <q-select
@@ -84,7 +86,7 @@
           outlined
           v-model="modelGender"
           :options="genderOptions"
-          label="Sexo"
+          label="Gender"
         />
         <q-input outlined v-model="phoneStudent" label="Phone Number" />
 
@@ -260,8 +262,17 @@ export default defineComponent({
     },
 
     deleteStudent(id: string) {
-      console.log(id);
-      // axios.delete('/api/student'+id).then().catch()
+      axios
+        .delete(`/api/students/${id}`)
+        .then(() => this.populatedTable())
+        .catch(err =>
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          }),
+        );
     },
   },
 

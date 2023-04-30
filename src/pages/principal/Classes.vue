@@ -27,7 +27,7 @@
                 color="warning"
                 size="sm"
                 dense
-                @click="editStudent(props.row._id)"
+                @click="editClasses(props.row._id)"
               />
               <q-btn
                 icon="delete"
@@ -35,7 +35,7 @@
                 size="sm"
                 dense
                 class="ml-2"
-                @click="deleteStudent(props.row._id)"
+                @click="deleteClasses(props.row._id)"
               />
             </q-td>
           </template>
@@ -51,6 +51,7 @@
         class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
         @submit="onSubmit"
       >
+        <span class="text-xl">Register</span>
         <q-input outlined v-model="nameClasses" label="Name" />
         <q-select
           class="w-auto"
@@ -112,6 +113,76 @@
       </q-form>
     </q-card>
   </q-dialog>
+
+  <!-- MODAL EDIT -->
+  <q-dialog v-model="edit">
+    <q-card>
+      <q-form
+        class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
+        @submit="onEditSubmit"
+      >
+        <span class="text-xl">Edit</span>
+        <q-input outlined v-model="nameClasses" label="Name" />
+        <q-select
+          class="w-auto"
+          outlined
+          v-model="modelCourses"
+          :options="coursesSelectedOptions"
+          label="Courses"
+        />
+
+        <q-input
+          filled
+          v-model="startDate"
+          mask="date"
+          :rules="['date']"
+          label="Starting date"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="startDate">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+
+        <q-input
+          filled
+          v-model="endDate"
+          mask="date"
+          :rules="['date']"
+          label="End Date"
+        >
+          <template v-slot:append>
+            <q-icon name="event" class="cursor-pointer">
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-date v-model="endDate">
+                  <div class="row items-center justify-end">
+                    <q-btn v-close-popup label="Close" color="primary" flat />
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-icon>
+          </template>
+        </q-input>
+
+        <q-btn label="Edit" color="primary" type="submit" v-close-popup />
+      </q-form>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script lang="ts">
@@ -119,6 +190,12 @@ import { defineComponent, ref } from 'vue';
 import axios from '../../services/axios';
 import Header from '../../components/header/Header.vue';
 import { useQuasar } from 'quasar';
+
+interface ICourses {
+  _id: string;
+  name: string;
+  description: string;
+}
 
 export default defineComponent({
   name: 'Classes',
@@ -134,27 +211,116 @@ export default defineComponent({
     const $q = useQuasar();
     return {
       register: ref(false),
+      edit: ref(false),
       nameClasses: ref(''),
       modelCourses: ref(''),
       startDate: ref(''),
       endDate: ref(''),
       coursesOptions: ref([]),
       coursesSelectedOptions: ref([]),
+      editId: ref(''),
       columns: [
         {
-          name: '',
+          name: 'name',
+          label: 'Name',
+          field: 'name',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'courses',
+          label: 'Courses',
+          field: row => row.id_course.name,
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'start_date',
+          label: 'Start date',
+          field: 'start_date',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'end_date',
+          label: 'End Date',
+          field: 'end_date',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'action',
+          label: 'Actions',
+          align: 'center',
         },
       ],
     };
   },
 
   methods: {
-    onSubmit() {
-      console.log('ok');
-      console.log('ok');
-      console.log('ok');
+    refreshInputs() {
+      this.nameClasses = '';
+      this.startDate = '';
+      this.endDate = '';
     },
-    async populateTable() {},
+    onSubmit() {
+      const idCourse = (this.coursesOptions as ICourses[]).find(
+        item => item.name == this.modelCourses,
+      );
+
+      const body = {
+        name: this.nameClasses,
+        start_date: this.startDate,
+        end_date: this.endDate,
+        id_course: idCourse?._id,
+      };
+
+      axios
+        .post('/api/classes', body)
+        .then(() => {
+          this.populateTable();
+          this.refreshInputs();
+        })
+        .catch(err => {
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          });
+        });
+    },
+
+    onEditSubmit() {
+      const body = {
+        name: this.nameClasses,
+        start_date: this.startDate,
+        end_date: this.endDate,
+        id_course: this.editId,
+      };
+
+      axios
+        .put('/api/classes', body)
+        .then(() => {
+          this.populateTable();
+          this.refreshInputs();
+        })
+        .catch(err => {
+          this.$q.notify({
+            message: `Error, check your console! ${err.message}`,
+            position: 'top-right',
+            icon: 'announcement',
+            color: 'warning',
+          });
+        });
+    },
+
+    async populateTable() {
+      await axios.get('/api/classes').then(res => {
+        this.classes = res.data;
+      });
+    },
+
     async populateOptionsCourses() {
       await axios
         .get('/api/courses')
@@ -168,9 +334,26 @@ export default defineComponent({
           });
         });
 
-      this.coursesOptions.map(item =>
+      (this.coursesOptions as ICourses[]).map(item =>
         this.coursesSelectedOptions.push(item.name),
       );
+    },
+
+    deleteClasses(id: string) {
+      axios.delete(`/api/courses/${id}`).then(() => {
+        this.populateTable();
+        this.refreshInputs();
+      });
+    },
+
+    editClasses(id: string) {
+      const classes: any = this.classes.find(classe => classe['_id'] == id);
+
+      this.edit = true;
+      this.editId = id;
+      this.nameClasses = classes.name;
+      this.startDate = classes.start_date;
+      this.endDate = classes.end_date;
     },
   },
 
@@ -180,5 +363,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<!-- TODO: POPULATE TABLE REFRESH INPUTS -->

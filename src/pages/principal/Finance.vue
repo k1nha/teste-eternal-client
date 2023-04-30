@@ -10,6 +10,38 @@
           <q-btn label="Register" color="primary" @click="register = true" />
         </div>
       </div>
+
+      <div class="w-full p-10">
+        <q-table
+          title="List of Finance"
+          :columns="columns"
+          :rows="finances"
+          separator="cell"
+          row-key="_id"
+          dense
+          card-class="bg-backdrop backdropfilter"
+        >
+          <template v-slot:body-cell-action="props">
+            <q-td :props="props">
+              <q-btn
+                icon="create"
+                color="warning"
+                size="sm"
+                dense
+                @click="editStudent(props.row._id)"
+              />
+              <q-btn
+                icon="delete"
+                color="negative"
+                size="sm"
+                dense
+                class="ml-2"
+                @click="deleteStudent(props.row._id)"
+              />
+            </q-td>
+          </template>
+        </q-table>
+      </div>
     </div>
   </div>
 </template>
@@ -17,16 +49,81 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Header from '../../components/header/Header.vue';
+import axios from '../../services/axios';
 
 export default defineComponent({
   name: 'Finance',
   components: {
     Header,
   },
+  data() {
+    return {
+      finances: [],
+    };
+  },
   setup() {
     return {
       register: ref(false),
+      columns: [
+        {
+          name: 'name_student',
+          label: 'Student name',
+          field: row => row.id_frequency.id_Classes_Students.id_student.name,
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'name_classes',
+          label: 'Name Classes',
+          field: row => row.id_frequency.id_Classes_Students.id_classes.name,
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'payment_status',
+          label: 'Payment Status',
+          field: 'payment_status',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'payment_type',
+          label: 'Payment Type',
+          field: 'payment_type',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'payment_date',
+          label: 'Payment Date',
+          field: 'payment_date',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'payment_amount',
+          label: 'Payment Amount',
+          field: 'payment_amount',
+          align: 'center',
+          sortable: true,
+        },
+        {
+          name: 'action',
+          label: 'Actions',
+          align: 'center',
+        },
+      ],
     };
+  },
+  methods: {
+    async populateTable() {
+      await axios.get('/api/finances').then(res => {
+        this.finances = res.data;
+      });
+    },
+  },
+  mounted() {
+    this.populateTable();
   },
 });
 </script>
