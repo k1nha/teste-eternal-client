@@ -9,7 +9,12 @@
           <span class="text-xl uppercase tracking-wide font-bold"
             >Frequency</span
           >
-          <q-btn label="Register" color="primary" @click="register = true" />
+          <q-btn
+            label="Register"
+            color="primary"
+            text-color="dark"
+            @click="register = true"
+          />
         </div>
       </div>
 

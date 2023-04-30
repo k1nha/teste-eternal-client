@@ -130,7 +130,7 @@ export default defineComponent({
         };
 
         const { message }: MessageResponse = await axios
-          .post('auth/user', JSON.stringify(user))
+          .post('/auth/user', JSON.stringify(user))
           .then(res => res.data);
 
         this.auth.setAuthToken(message.token);
