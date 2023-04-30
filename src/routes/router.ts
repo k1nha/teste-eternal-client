@@ -3,19 +3,19 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 
 // Pages
 import Login from '../pages/Login.vue';
-import Register from '../pages/Register.vue';
 import PageNotFound from '../pages/PageNotFound.vue';
-import Dashboard from '../pages/principal/Dashboard.vue';
-import Courses from '../pages/principal/Courses.vue';
-import Students from '../pages/principal/Students.vue';
 import Classes from '../pages/principal/Classes.vue';
-import Frequency from '../pages/principal/Frequency.vue';
+import Courses from '../pages/principal/Courses.vue';
+import Dashboard from '../pages/principal/Dashboard.vue';
 import Finance from '../pages/principal/Finance.vue';
+import Frequency from '../pages/principal/Frequency.vue';
+import Students from '../pages/principal/Students.vue';
 import StudentsClasses from '../pages/principal/StudentsClasses.vue';
+import Register from '../pages/Register.vue';
 
 // Components
-import { useAuth } from '../store/useAuth';
 import History from '../pages/principal/History.vue';
+import { useAuth } from '../store/useAuth';
 
 const routes: RouteRecordRaw[] = [
   {
@@ -104,7 +104,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _from, next) => {
   if (to.meta?.auth) {
     const auth = useAuth();
     if (auth.token && auth.user) {

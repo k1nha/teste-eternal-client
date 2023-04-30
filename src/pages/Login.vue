@@ -28,6 +28,7 @@
                 label="Your Email"
                 class="border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                 type="email"
+                required
               />
             </div>
             <div>
@@ -39,6 +40,7 @@
                 class="border sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full px-2.5 bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
                 color=""
                 :type="isPwd ? 'password' : 'text'"
+                required
               >
                 <template v-slot:append>
                   <q-icon
@@ -112,8 +114,8 @@ export default defineComponent({
     const router = useRouter();
     return {
       isPwd: ref(true),
-      email: ref('lucascmpus@gmail.com'), //TODO: remove email/password
-      password: ref('1234'),
+      email: ref(''), //TODO: remove email/password
+      password: ref(''),
       auth,
       router,
     };

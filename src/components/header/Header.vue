@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white/50 backdrop-blur-sm w-56 duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] flex flex-col justify-between"
+    class="bg- backdrop-blur-sm w-56 duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] flex flex-col justify-between"
   >
     <div class="">
       <h1
@@ -18,7 +18,7 @@
       <div class="px-8 pt-3 flex gap-4">
         <span class="text-xs font-medium text-gray-200 h-4">User</span>
         <span class="text-xs font-medium text-white h-4">{{
-          user.replace(/@[^@]+$/, '"')
+          user.replace(/\"|@.+$/gm, '')
         }}</span>
       </div>
 

@@ -2,12 +2,17 @@
   <div class="bg-cover w-screen h-screen flex p-2 bg-gray-900">
     <Header></Header>
     <div
-      class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
+      class="w-[calc(100%-240px)] bg-white/20 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
       <div class="w-full flex p-10">
         <div class="w-full flex justify-between items-center rounded-md">
           <span class="text-xl uppercase tracking-wide font-bold">Classes</span>
-          <q-btn label="Register" color="primary" @click="register = true" />
+          <q-btn
+            label="Register"
+            color="primary"
+            text-color="dark"
+            @click="register = true"
+          />
         </div>
       </div>
 
@@ -187,9 +192,9 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import axios from '../../services/axios';
 import Header from '../../components/header/Header.vue';
-import { useQuasar } from 'quasar';
+import axios from '../../services/axios';
+import { QTableColumn } from 'quasar';
 
 interface ICourses {
   _id: string;
@@ -208,7 +213,6 @@ export default defineComponent({
     };
   },
   setup() {
-    const $q = useQuasar();
     return {
       register: ref(false),
       edit: ref(false),
@@ -230,7 +234,7 @@ export default defineComponent({
         {
           name: 'courses',
           label: 'Courses',
-          field: row => row.id_course.name,
+          field: (row: { id_course: { name: any } }) => row.id_course.name,
           align: 'center',
           sortable: true,
         },
@@ -253,7 +257,7 @@ export default defineComponent({
           label: 'Actions',
           align: 'center',
         },
-      ],
+      ] as QTableColumn[],
     };
   },
 
@@ -324,7 +328,9 @@ export default defineComponent({
     async populateOptionsCourses() {
       await axios
         .get('/api/courses')
-        .then(res => (this.coursesOptions = res.data))
+        .then(res => {
+          this.coursesOptions = res.data;
+        })
         .catch(err => {
           this.$q.notify({
             message: `Error, check your console! ${err.message}`,
@@ -335,7 +341,7 @@ export default defineComponent({
         });
 
       (this.coursesOptions as ICourses[]).map(item =>
-        this.coursesSelectedOptions.push(item.name),
+        (this.coursesSelectedOptions as string[]).push(item.name),
       );
     },
 

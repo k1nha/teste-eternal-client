@@ -113,7 +113,9 @@ export default defineComponent({
         } else {
           this.router.push('/');
         }
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     },
 
     isValidEmail(val: string) {

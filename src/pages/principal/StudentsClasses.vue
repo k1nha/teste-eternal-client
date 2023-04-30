@@ -2,14 +2,19 @@
   <div class="bg-cover w-screen h-screen flex p-2 bg-gray-900">
     <Header />
     <div
-      class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
+      class="w-[calc(100%-240px)] bg-white/20 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
       <div class="w-full flex p-10">
         <div class="w-full flex justify-between items-center rounded-md">
           <span class="text-xl uppercase tracking-wide font-bold"
             >Students - Classes</span
           >
-          <q-btn label="Register" color="primary" @click="register = true" />
+          <q-btn
+            label="Register"
+            color="primary"
+            @click="register = true"
+            text-color="dark"
+          />
         </div>
       </div>
       <!-- table -->
@@ -88,7 +93,25 @@
 import { defineComponent, ref } from 'vue';
 import Header from '../../components/header/Header.vue';
 import axios from '../../services/axios';
-import { useQuasar } from 'quasar';
+import { QTableColumn, useQuasar } from 'quasar';
+
+interface IclassesOptions {
+  _id: string;
+  id_course: {
+    name: string;
+    _id: string;
+  };
+  name: string;
+  start_date: string;
+}
+
+interface IstudentsOptions {
+  _id: string;
+  name: string;
+  gender: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export default defineComponent({
   name: 'StudentClasses',
@@ -107,12 +130,13 @@ export default defineComponent({
     return {
       register: ref(false),
       amoutClass: ref(0),
-      classesOptions: ref([]),
+      classesOptions: ref([] as IclassesOptions[]),
       classesModel: ref(''),
-      studentsOptions: ref([]),
+      studentsOptions: ref([] as IstudentsOptions[]),
       studentsModel: ref(''),
       classesSelectOptions: ref([]),
       studentsSelectOptions: ref([]),
+      $q,
 
       columns: [
         {
@@ -125,14 +149,14 @@ export default defineComponent({
         {
           name: 'nameClasses',
           label: 'Name Classes',
-          field: row => row.id_classes.name,
+          field: (row: { id_classes: { name: any } }) => row.id_classes.name,
           align: 'center',
           sortable: true,
         },
         {
           name: 'nameStudent',
           label: 'Name Student',
-          field: row => row.id_student.name,
+          field: (row: { id_student: { name: any } }) => row.id_student.name,
           align: 'center',
           sortable: true,
         },
@@ -148,7 +172,7 @@ export default defineComponent({
           label: 'Actions',
           align: 'center',
         },
-      ],
+      ] as QTableColumn[],
     };
   },
 
@@ -168,23 +192,23 @@ export default defineComponent({
     },
 
     async populateOptionsClasses() {
-      await axios
-        .get('/api/classes')
-        .then(res => (this.classesOptions = res.data));
+      await axios.get('/api/classes').then(res => {
+        this.classesOptions = res.data;
+      });
 
-      this.classesOptions.map(item =>
-        this.classesSelectOptions.push(item.name),
+      (this.classesOptions as IclassesOptions[]).map(item =>
+        (this.classesSelectOptions as string[]).push(item.name),
       );
     },
 
     async populateOptionsStudents() {
-      await axios
-        .get('/api/students')
-        .then(res => (this.studentsOptions = res.data));
+      await axios.get('/api/students').then(res => {
+        this.studentsOptions = res.data;
+      });
       // type
 
-      this.studentsOptions.map(item =>
-        this.studentsSelectOptions.push(item.name),
+      (this.studentsOptions as IstudentsOptions[]).map(item =>
+        (this.studentsSelectOptions as string[]).push(item.name),
       );
     },
 
@@ -198,14 +222,12 @@ export default defineComponent({
       );
 
       const body = {
-        id_classes: idClasses._id,
-        id_student: idStudent._id,
+        id_classes: idClasses?._id,
+        id_student: idStudent?._id,
         amount_class: +this.amoutClass,
       };
 
-      console.log(body);
-
-      axios.post('/api/classesstudents', body).then(res => {
+      axios.post('/api/classesstudents', body).then(() => {
         this.populateTable();
       });
     },

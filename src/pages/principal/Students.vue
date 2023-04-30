@@ -2,14 +2,19 @@
   <div class="bg-cover w-screen h-screen flex p-2 bg-gray-900">
     <Header></Header>
     <div
-      class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
+      class="w-[calc(100%-240px)] bg-white/20 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
       <div class="w-full flex p-10">
         <div class="w-full flex justify-between items-center rounded-md">
           <span class="text-xl uppercase tracking-wide font-bold"
             >Students</span
           >
-          <q-btn label="Register" color="primary" @click="register = true" />
+          <q-btn
+            label="Register"
+            color="primary"
+            @click="register = true"
+            text-color="dark"
+          />
         </div>
       </div>
       <!-- table -->
@@ -54,19 +59,19 @@
         class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
         @submit="onSubmit"
       >
-      <span class="text-xl">Register</span>
+        <span class="text-xl">Register</span>
         <q-input outlined v-model="nameStudent" label="Name" />
-        <q-input outlined v-model="ageStudent" label="Age" />
+        <q-input outlined v-model="ageStudent" label="Age" required />
         <q-select
           class="w-auto"
           outlined
           v-model="modelGender"
           :options="genderOptions"
-          label="Sexo"
+          label="Gender"
         />
         <q-input outlined v-model="phoneStudent" label="Phone Number" />
 
-        <q-btn label="Cadastrar" color="primary" type="submit" v-close-popup />
+        <q-btn label="Register" color="primary" type="submit" v-close-popup />
       </q-form>
     </q-card>
   </q-dialog>
@@ -78,7 +83,7 @@
         class="flex flex-col justify-between h-[500px] w-[500px] bg-white p-10"
         @submit="onEditSubmit"
       >
-      <span class="text-xl">Edit</span>
+        <span class="text-xl">Edit</span>
         <q-input outlined v-model="nameStudent" label="Name" />
         <q-input outlined v-model="ageStudent" label="Age" />
         <q-select
@@ -100,7 +105,7 @@
 import { defineComponent, ref } from 'vue';
 import Header from '../../components/header/Header.vue';
 import axios from '../../services/axios';
-import { useQuasar } from 'quasar';
+import { QTableColumn, useQuasar } from 'quasar';
 
 interface StudentI {
   _id: string;
@@ -175,7 +180,8 @@ export default defineComponent({
           label: 'Actions',
           align: 'center',
         },
-      ],
+      ] as QTableColumn[],
+      $q,
     };
   },
 

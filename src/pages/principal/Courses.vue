@@ -2,12 +2,17 @@
   <div class="bg-cover w-screen h-screen flex p-2 bg-gray-900">
     <Header></Header>
     <div
-      class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
+      class="w-[calc(100%-240px)] bg-white/20 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
       <div class="w-full flex p-10">
         <div class="w-full flex justify-between items-center rounded-md">
           <span class="text-xl uppercase tracking-wide font-bold">Courses</span>
-          <q-btn label="Register" color="primary" @click="register = true" />
+          <q-btn
+            label="Register"
+            color="primary"
+            @click="register = true"
+            text-color="dark"
+          />
         </div>
       </div>
 
@@ -88,10 +93,10 @@
 </template>
 
 <script lang="ts">
+import { QTableColumn, useQuasar } from 'quasar';
 import { defineComponent, ref } from 'vue';
-import axios from '../../services/axios';
 import Header from '../../components/header/Header.vue';
-import { useQuasar } from 'quasar';
+import axios from '../../services/axios';
 
 export default defineComponent({
   name: 'Courses',
@@ -111,7 +116,7 @@ export default defineComponent({
       nameCourse: ref(''),
       descriptionCourse: ref(''),
       editId: ref(''),
-
+      $q,
       columns: [
         {
           name: '_id',
@@ -137,9 +142,11 @@ export default defineComponent({
         {
           name: 'action',
           label: 'Actions',
+          field: '',
           align: 'center',
+          sortable: true,
         },
-      ],
+      ] as QTableColumn[],
     };
   },
   methods: {

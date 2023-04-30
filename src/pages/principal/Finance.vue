@@ -2,12 +2,17 @@
   <div class="bg-cover w-screen h-screen flex p-2 bg-gray-900">
     <Header></Header>
     <div
-      class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
+      class="w-[calc(100%-240px)] bg-white/20 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
       <div class="w-full flex p-10">
         <div class="w-full flex justify-between items-center rounded-md">
           <span class="text-xl uppercase tracking-wide font-bold">Finance</span>
-          <q-btn label="Register" color="primary" @click="register = true" />
+          <q-btn
+            label="Register"
+            color="primary"
+            @click="register = true"
+            text-color="dark"
+          />
         </div>
       </div>
 
@@ -23,21 +28,16 @@
         >
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn
-                icon="create"
-                color="warning"
-                size="sm"
-                dense
-                @click="editStudent(props.row._id)"
-              />
+              <q-btn icon="create" color="warning" size="sm" dense />
+              <!--@click="editStudent(props.row._id)" -->
               <q-btn
                 icon="delete"
                 color="negative"
                 size="sm"
                 dense
                 class="ml-2"
-                @click="deleteStudent(props.row._id)"
               />
+              <!-- @click="deleteStudent(props.row._id)" -->
             </q-td>
           </template>
         </q-table>
@@ -50,6 +50,7 @@
 import { defineComponent, ref } from 'vue';
 import Header from '../../components/header/Header.vue';
 import axios from '../../services/axios';
+import { QTableColumn } from 'quasar';
 
 export default defineComponent({
   name: 'Finance',
@@ -68,14 +69,22 @@ export default defineComponent({
         {
           name: 'name_student',
           label: 'Student name',
-          field: row => row.id_frequency.id_Classes_Students.id_student.name,
+          field: (row: {
+            id_frequency: {
+              id_Classes_Students: { id_student: { name: any } };
+            };
+          }) => row.id_frequency.id_Classes_Students.id_student.name,
           align: 'center',
           sortable: true,
         },
         {
           name: 'name_classes',
           label: 'Name Classes',
-          field: row => row.id_frequency.id_Classes_Students.id_classes.name,
+          field: (row: {
+            id_frequency: {
+              id_Classes_Students: { id_classes: { name: any } };
+            };
+          }) => row.id_frequency.id_Classes_Students.id_classes.name,
           align: 'center',
           sortable: true,
         },
@@ -112,7 +121,7 @@ export default defineComponent({
           label: 'Actions',
           align: 'center',
         },
-      ],
+      ] as QTableColumn[],
     };
   },
   methods: {

@@ -2,7 +2,7 @@
   <div class="bg-cover w-screen h-screen flex p-2 bg-gray-900">
     <Header></Header>
     <div
-      class="w-[calc(100%-240px)] bg-white/50 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
+      class="w-[calc(100%-240px)] bg-white/20 backdrop-blur-sm duration-150 rounded-2xl py-5 relative h-[calc(100vh-20px)] ml-3 flex flex-col items-center text-white"
     >
       <div class="w-full flex p-10">
         <div class="w-full flex justify-between items-center rounded-md">
@@ -37,32 +37,22 @@
           </template>
           <template v-slot:body-cell-justify="props">
             <q-td :props="props">
-              <q-btn
-                icon="calendar_today"
-                color="warning"
-                size="sm"
-                dense
-                @click="justifyStudent(props.row._id)"
-              />
+              <q-btn icon="calendar_today" color="warning" size="sm" dense />
+              <!--@click="justifyStudent(props.row._id)" -->
             </q-td>
           </template>
           <template v-slot:body-cell-action="props">
             <q-td :props="props">
-              <q-btn
-                icon="create"
-                color="warning"
-                size="sm"
-                dense
-                @click="editActionFrequency(props.row._id)"
-              />
+              <q-btn icon="create" color="warning" size="sm" dense />
+              <!--@click="editActionFrequency(props.row._id)" -->
               <q-btn
                 icon="delete"
                 color="negative"
                 size="sm"
                 dense
                 class="ml-2"
-                @click="deleteActionFrequency(props.row._id)"
               />
+              <!-- @click="deleteActionFrequency(props.row._id)" -->
             </q-td>
           </template>
         </q-table>
@@ -217,8 +207,21 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
 import Header from '../../components/header/Header.vue';
-import { useQuasar } from 'quasar';
+import { QTableColumn, useQuasar } from 'quasar';
 import axios from '../../services/axios';
+
+interface IclassesStdOptions {
+  _id: string;
+  id_classes: {
+    name: string;
+    _id: string;
+  };
+  id_student: {
+    name: string;
+    _id: string;
+  };
+  amount_class: number;
+}
 
 export default defineComponent({
   name: 'Frequency',
@@ -242,7 +245,7 @@ export default defineComponent({
       idSelectedOptions: ref([]),
       statusModel: ref(''),
       classesStdModel: ref(''),
-      classesStdOptions: ref([]),
+      classesStdOptions: ref([] as IclassesStdOptions[]),
       classesSelectedOptions: ref([]),
       StdModel: ref(''),
       StdSelectedOptions: ref([]),
@@ -283,7 +286,8 @@ export default defineComponent({
           label: 'Actions',
           align: 'center',
         },
-      ],
+      ] as QTableColumn[],
+      $q,
     };
   },
   methods: {
@@ -308,17 +312,20 @@ export default defineComponent({
     async populateOptions() {
       await axios.get('/api/classesstudents').then(res => {
         this.classesStdOptions = res.data;
+        console.log(res.data);
       });
 
       this.classesStdOptions.map(item =>
-        this.classesSelectedOptions.push(item.id_classes.name),
+        (this.classesSelectedOptions as string[]).push(item.id_classes.name),
       );
 
       this.classesStdOptions.map(item =>
-        this.StdSelectedOptions.push(item.id_student.name),
+        (this.StdSelectedOptions as string[]).push(item.id_student.name),
       );
 
-      this.classesStdOptions.map(item => this.idSelectedOptions.push(item._id));
+      this.classesStdOptions.map(item =>
+        (this.idSelectedOptions as string[]).push(item._id),
+      );
     },
 
     showStudentsInClass() {
