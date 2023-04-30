@@ -1,10 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
-import * as env from 'dotenv';
-
-env.config();
 
 const instanceAxios: AxiosInstance = axios.create({
-  baseURL: import.meta.env.MY_API || 'http://localhost:3030',
+  baseURL: import.meta.env.BASE_URL || 'http://localhost:3030',
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
